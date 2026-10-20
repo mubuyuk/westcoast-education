@@ -1,0 +1,24 @@
+﻿namespace WestcoastEducation
+{
+    public class Person
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PersonalNumber { get; set; }
+        public string Address { get; set; }
+        public string PostalCode { get; set; }
+        public string City { get; set; }
+
+        public Person(string firstName, string lastName, string phoneNumber, string personalNumber, string address, string postalCode, string city)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            PersonalNumber = personalNumber;
+            Address = address;
+            PostalCode = postalCode;
+            City = city;
+        }
+    }
+}
