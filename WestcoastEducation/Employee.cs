@@ -12,5 +12,10 @@
             KnowledgeArea = knowledgeArea;
             EmploymentDate = employmentDate;
         }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}, Anställd: {EmploymentDate.ToShortDateString()}";
+        }
     }
 }

@@ -1,46 +1,13 @@
-﻿namespace WestcoastEducation
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+
+namespace WestcoastEducation
 {
     internal class Program
     {
-        static void ShowCourses(List<Course> courses)
-        {
-            foreach (Course course in courses)
-            {
-                Console.WriteLine(course.GetCourseInfo());
-            }
-        }
-
-        static void AddCourse(List<Course> courses, Course newCourse)
-        {
-            if (courses.Exists(c => c.CourseNumber == newCourse.CourseNumber))
-            {
-                Console.WriteLine($"Kurs med kursnummer {newCourse.CourseNumber} finns redan.");
-                return;
-            }
-            courses.Add(newCourse);
-        }
-
-        static void ShowStudents(List<Student> students)
-        {
-            foreach (Student student in students)
-            {
-                Console.WriteLine(student.GetStudentInfo());
-            }
-        }
-
-        static void AddStudent(List<Student> students, Student newStudent)
-        {
-            if (students.Exists(s => s.PersonalNumber == newStudent.PersonalNumber))
-            {
-                Console.WriteLine($"Student med personnummer {newStudent.PersonalNumber} finns redan.");
-                return;
-            }
-            students.Add(newStudent);
-        }
-
         static void Main(string[] args)
         {
-            Course course = new Course(
+            Course csharpCourse = new Course(
                 courseNumber: 101,
                 title: "C# Grundkurs",
                 duration: 8,
@@ -49,7 +16,7 @@
                 typeOfCourse: CourseType.Distance
                 );
 
-            Course course2 = new Course(
+            Course oopCourse = new Course(
                 courseNumber: 102,
                 title: "Objektorienterad programmering",
                 duration: 10,
@@ -58,16 +25,10 @@
                 typeOfCourse: CourseType.Classroom
                 );
 
-            List<Course> courses = new List<Course>();
-            AddCourse(courses, course);
-            AddCourse(courses, course2);
-
-            Console.WriteLine($"Antal kurser: {courses.Count}");
-
-            ShowCourses(courses);
-
-
-
+            CourseManager courseManager = new CourseManager();
+            courseManager.AddCourse(csharpCourse);
+            courseManager.AddCourse(oopCourse);
+            
             Student student = new Student(
                 firstName: "Anna",
                 lastName: "Svensson",
@@ -87,16 +48,9 @@
                 postalCode: "543 21",
                 city: "Malmö"
             );
-
-
-            List<Student> students = new List<Student>();
-            AddStudent(students, student);
-            AddStudent(students, student2);
-
-            ShowStudents(students);
-
-            Console.WriteLine($"Antal studenter: {students.Count}");
-
+            StudentManager studentManager = new StudentManager();
+            studentManager.AddStudent(student);
+            studentManager.AddStudent(student2);
 
             Teacher teacher = new Teacher(
                 firstName: "Karin",
@@ -109,11 +63,7 @@
                 knowledgeArea: "Programmering",
                 employmentDate: new DateTime(2020, 1, 1)
             );
-
-            teacher.AddCourse(course);
-
-            Console.WriteLine($"Antal kurser: {teacher.Courses.Count}");
-
+            teacher.AddCourse(csharpCourse);
 
             EducationManager educationManager = new EducationManager(
                 firstName: "Maria",
@@ -127,8 +77,6 @@
                 employmentDate: new DateTime(2020, 1, 1)
             );
 
-            Console.WriteLine($"Utbildningsledare: {educationManager.FirstName} {educationManager.LastName}, Anställningsdatum: {educationManager.EmploymentDate.ToShortDateString()}");
-
             Administrator administrator = new Administrator(
                 firstName: "Lars",
                 lastName: "Nilsson",
@@ -141,8 +89,61 @@
                 employmentDate: new DateTime(2020, 1, 1)
             );
 
-            Console.WriteLine($"Administratör: {administrator.FirstName} {administrator.LastName}, Kunskapsområde: {administrator.KnowledgeArea}, Anställningsdatum: {administrator.EmploymentDate.ToShortDateString()}");
-            Console.ReadKey();
+            Console.WriteLine("========== WESTCOAST EDUCATION ==========");
+
+            Console.WriteLine("\n========== KURSER ==========");
+            courseManager.ShowCourses();
+            Console.WriteLine($"Totalt antal kurser: {courseManager.GetCourseCount()}");
+
+            Console.WriteLine("\n========== STUDENTER ==========");
+            studentManager.ShowStudents();
+            Console.WriteLine($"Totalt antal studenter: {studentManager.GetStudentCount()}");
+
+            Console.WriteLine("\n========== PERSONAL ==========");
+
+            Console.WriteLine("\n--- Lärare ---");
+            Console.WriteLine(teacher);
+            Console.WriteLine($"Ansvarar för antal kurser: {teacher.Courses.Count}");
+
+            Console.WriteLine("\n--- Utbildningsledare ---");
+            Console.WriteLine(educationManager);
+
+            Console.WriteLine("\n--- Administratör ---");
+            Console.WriteLine(administrator);
+
+            //path to save json-file
+            string path = Path.GetFullPath(
+                Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data", "courses.json")
+            );
+
+            JsonSerializerOptions options = new()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            //convert to json-format
+            string json = JsonSerializer.Serialize(courseManager.GetCourses(), options);
+            File.WriteAllText(path, json);
+            Console.WriteLine("\n========== SKRIVA KURSER TILL JSON ==========");
+            Console.WriteLine(json);
+
+            //convert from json-format to c# object
+            string jsonFromFile = File.ReadAllText(path);
+            var loadedCourses = JsonSerializer.Deserialize<List<Course>>(jsonFromFile, options);
+
+            if (loadedCourses != null )
+            {
+                Console.WriteLine("\n========== LÄSA IN KURSER ==========");
+
+                foreach (var course in loadedCourses)
+                {
+                    Console.WriteLine(course.GetCourseInfo());
+                }
+            }
+                Console.ReadKey();
         }
     }
 }

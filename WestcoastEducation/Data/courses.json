@@ -1,0 +1,18 @@
+[
+  {
+    "courseNumber": 101,
+    "title": "C# Grundkurs",
+    "duration": 8,
+    "startDate": "2026-11-02T00:00:00",
+    "endDate": "2026-12-08T00:00:00",
+    "typeOfCourse": 1
+  },
+  {
+    "courseNumber": 102,
+    "title": "Objektorienterad programmering",
+    "duration": 10,
+    "startDate": "2026-11-02T00:00:00",
+    "endDate": "2026-12-08T00:00:00",
+    "typeOfCourse": 0
+  }
+]

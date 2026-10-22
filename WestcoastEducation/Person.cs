@@ -20,5 +20,10 @@
             PostalCode = postalCode;
             City = city;
         }
+
+        public override string ToString() 
+        { 
+            return $"{FirstName} {LastName}, {City}";
+        }
     }
 }
