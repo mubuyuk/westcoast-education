@@ -16,7 +16,7 @@
 
         public string GetStudentInfo()
         {
-            return $"Student: {GetFullName()}, Phone: {PhoneNumber}, Address: {Address}, {PostalCode} {City}";
+            return $"Student: {GetFullName()}, Telefon: {PhoneNumber}, Adress: {Address}, {PostalCode} {City}";
         }
     }
 }

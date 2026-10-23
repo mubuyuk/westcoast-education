@@ -21,7 +21,7 @@
 
         public string GetCourseInfo()
         {
-            return $"Course Number: {CourseNumber}, Title: {Title}, Duration: {Duration} weeks, Start Date: {StartDate.ToShortDateString()}, End Date: {EndDate.ToShortDateString()}, Type of Course: {TypeOfCourse}";
+            return $"Kurs nummer: {CourseNumber}, Titel: {Title}, Duration: {Duration} veckor, Start Datum: {StartDate.ToShortDateString()}, Slut Datum: {EndDate.ToShortDateString()}, Kurs typ: {TypeOfCourse}";
         }
     }
 }
