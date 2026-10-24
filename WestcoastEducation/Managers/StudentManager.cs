@@ -1,4 +1,6 @@
-﻿namespace WestcoastEducation
+﻿using WestcoastEducation.Models;
+
+namespace WestcoastEducation.Manager
 {
     public class StudentManager
     {

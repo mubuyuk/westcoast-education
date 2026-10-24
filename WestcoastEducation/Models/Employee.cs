@@ -1,4 +1,4 @@
-﻿namespace WestcoastEducation
+﻿namespace WestcoastEducation.Models
 {
     public class Employee : Person
     {

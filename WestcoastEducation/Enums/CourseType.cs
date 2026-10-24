@@ -1,4 +1,4 @@
-﻿namespace WestcoastEducation
+﻿namespace WestcoastEducation.Enum
 {
     public enum CourseType
     {

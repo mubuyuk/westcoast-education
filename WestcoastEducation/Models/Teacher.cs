@@ -1,5 +1,4 @@
-﻿
-namespace WestcoastEducation
+﻿namespace WestcoastEducation.Models
 {
     public class Teacher : Employee
     {

@@ -1,7 +1,10 @@
-﻿    using System.Text.Encodings.Web;
-    using System.Text.Json;
+﻿using WestcoastEducation.Enum;
+using WestcoastEducation.Interfaces;
+using WestcoastEducation.Manager;
+using WestcoastEducation.Models;
+using WestcoastEducation.Storage;
 
-    namespace WestcoastEducation
+namespace WestcoastEducation
     {
         internal class Program
         {
@@ -25,50 +28,26 @@
                     typeOfCourse: CourseType.Classroom
                     );
 
-                CourseManager courseManager = new CourseManager();
+            CourseManager courseManager = new CourseManager();
 
-            JsonSerializerOptions options = new()
+            ICourseStorage storage = new JsonCourseStorage();
+
+            List<Course> loadedCourses = storage.LoadCourses();
+
+            foreach (Course course in loadedCourses)
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true,
-                PropertyNameCaseInsensitive = true,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-
-            //path to save json-file
-            string path = Path.GetFullPath(
-                Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data", "courses.json")
-            );
-
-            if (File.Exists(path))
-            {
-                //convert from json-format to c# object
-                string jsonFromFile = File.ReadAllText(path);
-                var loadedCourses = JsonSerializer.Deserialize<List<Course>>(jsonFromFile, options);
-                if (loadedCourses != null)
-                {
-
-                    foreach (var course in loadedCourses)
-                    {
-                        courseManager.AddCourse(course);
-                        //Console.WriteLine(course.GetCourseInfo());
-                       }
-                }
+                courseManager.AddCourse(course);
             }
-            else
+
+            if (loadedCourses.Count == 0)
             {
                 courseManager.AddCourse(csharpCourse);
                 courseManager.AddCourse(oopCourse);
 
-                //convert to json-format
-                string json = JsonSerializer.Serialize(courseManager.GetCourses(), options);
-                File.WriteAllText(path, json);
-
-                Console.WriteLine("\n========== SKRIVA KURSER TILL JSON ==========");
-                Console.WriteLine(json);
+                storage.SaveCourses(courseManager.GetCourses());
             }
 
-                Student student = new Student(
+            Student student = new Student(
                     firstName: "Murat",
                     lastName: "Buyuksal",
                     phoneNumber: "070-123 45 67",
